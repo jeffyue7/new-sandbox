@@ -211,3 +211,138 @@ if __name__ == '__main__':
     imageViewer = ImageViewer()
     imageViewer.show()
     sys.exit(app.exec_())
+    
+    
+    
+    
+    #! /usr/bin/env python
+# -*- coding: utf-8 -*-
+#
+import os
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+
+"""
+
+"""
+
+import sys
+from PIL import Image
+from PyQt4 import QtGui, QtCore
+import matplotlib.pyplot as plt
+import numpy as np
+from pylab import *
+import scipy
+from PIL.ImageQt import ImageQt
+from scipy import misc
+import pyqtgraph as pg
+
+
+plt.ion()
+
+def opencsv(stringname):
+    ob=np.genfromtxt(stringname,delimiter=',',dtype=complex)
+    return ob
+
+
+class PtyGUI(QtGui.QMainWindow):
+
+    def __init__(self):
+        super(PtyGUI, self).__init__()
+
+        self.initUI()
+
+    def initUI(self):
+
+        self.grid = QtGui.QGridLayout()
+
+        # btn1 = QtGui.QPushButton("Start", self)
+        # self.grid.addWidget(btn1, 0, 0)
+
+        # btn2 = QtGui.QPushButton("Button 2", self)
+        # btn2.move(150, 50)
+
+        # btn1.clicked.connect(self.buttonClicked)
+        # btn2.clicked.connect(self.buttonClicked)
+
+        # Create textbox
+        # textbox = QLineEdit(self)
+        # textbox.move(20, 20)
+        # textbox.resize(280,40)
+        self.imageLabel = QtGui.QLabel()
+        # self.grid.addWidget(p, 0, 0)
+        self.imageLabel.setBackgroundRole(QtGui.QPalette.Base)
+        self.imageLabel.setSizePolicy(QtGui.QSizePolicy.Ignored,
+                QtGui.QSizePolicy.Ignored)
+        self.imageLabel.setScaledContents(True)
+
+
+
+
+        self.scrollArea = QtGui.QScrollArea()
+        self.scrollArea.setBackgroundRole(QtGui.QPalette.Dark)
+        self.scrollArea.setWidget(self.imageLabel)
+        self.setCentralWidget(self.scrollArea)
+
+        l = misc.face()
+        q = QtGui.QPixmap.fromImage(ImageQt(scipy.misc.toimage(l)))
+        self.imageLabel.setPixmap(q)
+        
+        self.imageLabel.adjustSize()
+
+
+
+        self.statusBar()
+
+        self.setGeometry(500, 500, 390, 250)
+        self.setWindowTitle('Ptylib GUI')
+        # self.show()
+
+    def buttonClicked(self):
+        os.system("/local/kyue/anlproject/ptography/ptycholib/src/ePIE -jobID=sim512 -beamSize=110e-9 -scanDims=30,30 -step=50e-9,50e-9 -i=3 -size=512 -lambda=2.4796837508399954e-10 -dx_d=172e-6 -z=1 -simulate=1 -blind=0")
+
+        ob=opencsv("/local/kyue/anlproject/ptography/ptycholib/src/data/gentest100_object.csv")
+        # ob=opencsv("/home/beams/USER2IDE/ptycholib/src/data/{:s}_object.csv".format(jobID))
+        oby,obx=ob.shape
+        ph=angle(ob)[50:oby-50,50:obx-50]
+        ph-=ph.min()
+
+
+
+        # p = QtGui.QLabel()
+        # q = QtGui.QPixmap.fromImage(ImageQt(scipy.misc.toimage(ph)))
+        # self.p.setPixmap(q)
+
+
+        # self.p.show()
+        # app.exec_()
+
+
+        # pg.image(ph)
+
+        # matshow(ph,cmap=cm.gray)
+
+
+        # im = Image.open('/local/kyue/anlproject/ptography/ptycholib/src/data/images/gentest100.tif')
+        # im.show()
+
+        # I = plt.imread('/local/kyue/anlproject/ptography/ptycholib/src/data/images/gentest100.tif')
+        # plt.imshow(I)
+        # sender = self.sender()
+        # self.statusBar().showMessage(sender.text() + ' was pressed')
+
+# def main():
+#
+#     app = QtGui.QApplication(sys.argv)
+#     ex = PtyGUI()
+#     ex.show()
+#     sys.exit(app.exec_())
+
+
+if __name__ == '__main__':
+    app = QtGui.QApplication(sys.argv)
+    ex = PtyGUI()
+    ex.show()
+    sys.exit(app.exec_())
+
+
